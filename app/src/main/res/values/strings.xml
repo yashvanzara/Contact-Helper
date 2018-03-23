@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Contact Helper</string>
+    <string name="title_activity_main">Contact Helper</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="GEO_LOCATION_API_KEY">AIzaSyB2R5X9tM-ODiZkSbJmGVcxmgKH6_AKGpo</string>
+</resources>

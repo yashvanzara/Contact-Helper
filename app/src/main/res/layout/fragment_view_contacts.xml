@@ -1,0 +1,45 @@
+<com.flipboard.bottomsheet.BottomSheetLayout
+    android:id="@+id/bottomsheet"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yashvanzara.www.contacthelper.ViewContactsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Contacts"
+        android:textSize="21sp"
+        android:padding="15dp"
+        android:id="@+id/tvMyContactsHeader"/>
+    <ProgressBar
+        android:id="@+id/loaderViewContacts"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="25dp"
+        android:visibility="gone"
+        android:layout_height="25dp" />
+
+    <com.dexafree.materialList.view.MaterialListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvMyContactsHeader"
+        android:id="@+id/material_listview"/>
+    <TextView
+        android:id="@+id/tvNoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:text="It's Lonely in here, Add some Contacts!"/>
+
+</RelativeLayout>
+</com.flipboard.bottomsheet.BottomSheetLayout>

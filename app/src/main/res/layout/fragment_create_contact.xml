@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yashvanzara.www.contacthelper.CreateContactFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add contact"
+        android:id="@+id/tvAddContactHeader"
+        android:textSize="21sp"/>
+    <EditText
+        android:layout_below="@id/tvAddContactHeader"
+        android:id="@+id/etNewContactName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
+        android:singleLine="true" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etNewContactNickName"
+        android:hint="Nick Name"
+        android:maxLength="25"
+        android:layout_below="@id/etNewContactName"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone number"
+        android:inputType="phone"
+
+        android:maxLength="10"
+        android:layout_below="@+id/etNewContactNickName"
+        android:id="@+id/etNewContactPhone"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:background="@drawable/rounded_call_button"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnContactLocation"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/etNewContactPhone"
+        android:layout_toLeftOf="@id/btnSaveContact"
+        android:text="Location"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_call_button"
+        android:layout_alignParentRight="true"
+        android:id="@+id/btnSaveContact"
+        android:text="Save Contact"
+        android:padding="5dp"
+        android:layout_below="@id/etNewContactPhone"/>
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:layout_marginTop="5dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_below="@id/btnSaveContact"
+        android:layout_height="wrap_content"
+        tools:context="com.yashvanzara.www.contacthelper.MainActivity" />
+    />
+
+
+</RelativeLayout>

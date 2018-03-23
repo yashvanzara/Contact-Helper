@@ -1,0 +1,42 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/white"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yashvanzara.www.contacthelper.ContactDetailsFragment">
+    >
+
+    <TextView
+        android:id="@+id/tvContactDetailsHeader"
+        android:layout_width="wrap_content"
+        android:textSize="24sp"
+        android:layout_height="wrap_content" />
+
+    <com.google.android.gms.maps.MapView
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/tvContactDetailsHeader"
+        android:layout_width="match_parent"
+        android:id="@+id/mapDisplay"
+        android:layout_height="300dp"></com.google.android.gms.maps.MapView>
+    <Button
+        android:id="@+id/btnDeleteContact"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/mapDisplay"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/btnCallContact"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/rounded_delete_button"
+        android:text="Delete"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/mapDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Call"
+        android:background="@drawable/rounded_call_button"
+        android:id="@+id/btnCallContact"/>
+
+</RelativeLayout>
