@@ -48,7 +48,6 @@ public class Contact implements Serializable{
 
     public Contact(){
 
-
     }
 
     @Override

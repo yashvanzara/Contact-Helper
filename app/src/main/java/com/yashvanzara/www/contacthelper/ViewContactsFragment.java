@@ -9,9 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -43,43 +40,41 @@ public class ViewContactsFragment extends Fragment {
     public ViewContactsFragment() {
         // Required empty public constructor
     }
-    private ListView lvContactsList;
-    private ArrayAdapter<String> aa;
-    String items[] = {"haha", "lol"};
+    /*Firebase fields*/
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     DatabaseReference dbRef;
     private FirebaseUser user;
+
     MaterialListView mListView;
     ValueEventListener vlistener;
     ProgressBar pb;
     protected BottomSheetLayout bottomSheetLayout;
-    TextView tvNoData;
-    Contact contactForEditing;
+    TextView tvNoData;//Placeholder if no contact exists
+    Contact contactForEditing;//Keeps track of the clicked contact for editing
     NavigationView navigationView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_contacts, container, false);
+        /*References*/
         navigationView = getActivity().findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_view_contacts);
         bottomSheetLayout =  view.findViewById(R.id.bottomsheet);
-        bottomSheetLayout.setUseHardwareLayerWhileAnimating(true);
         tvNoData = view.findViewById(R.id.tvNoData);
         mListView = view.findViewById(R.id.material_listview);
-        aa = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, items);
         pb = view.findViewById(R.id.loaderViewContacts);
-        startAnim();
 
-        TextView tv = new TextView(getActivity());
-        tv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        tv.setText("Nothing here!");
-        mListView.setEmptyView(tv);
+        navigationView.setCheckedItem(R.id.nav_view_contacts);
+        bottomSheetLayout.setUseHardwareLayerWhileAnimating(true);
+
+        startAnim();
+        /*Firebase*/
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("contacts");
         vlistener = new ValueEventListener() {
+            /*Listener to keep sync with data on firebase*/
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mListView.getAdapter().clearAll();
@@ -88,7 +83,7 @@ public class ViewContactsFragment extends Fragment {
                     final String key = contactSnapShop.getKey();
                     Contact c = contactSnapShop.getValue(Contact.class);
                     contacts.add(c);
-                    /*Loop through the updated tree and update local copy*/
+                    /*Loop through the updated tree and update local copy as a card*/
                     final Card card = new Card.Builder(getActivity())
                             .setTag(c.getContactNumber())
                             .withProvider(new CardProvider())
@@ -96,6 +91,7 @@ public class ViewContactsFragment extends Fragment {
                             .setDescription("Phone: " + c.getContactNumber())
                             .setTitle(c.getContactName() + " ("+c.getContactNickName() + ")")
                             .addAction(R.id.right_text_button, new TextViewAction(getActivity())
+                                    /*Action to handle display of contact*/
                                     .setText("View")
                                     .setTextResourceColor(R.color.accent_material_dark)
                                     .setListener(new OnActionClickListener() {
@@ -109,6 +105,7 @@ public class ViewContactsFragment extends Fragment {
                                         }
                                     }))
                             .addAction(R.id.left_text_button, new TextViewAction(getActivity())
+                                    /*Action to handle editing of a contact*/
                                     .setText("Edit")
                                     .setTextResourceColor(R.color.accent_material_dark)
                                     .setListener(new OnActionClickListener() {
@@ -132,6 +129,7 @@ public class ViewContactsFragment extends Fragment {
 
                 /*Keep track of selected item for editing*/
                 mListView.addOnItemTouchListener(new RecyclerItemClickListener.OnItemClickListener() {
+                    /*Keeps track of the most recently interacted contact for updating purpose*/
                     @Override
                     public void onItemClick(@NonNull Card card, int position) {
                         Log.d("Aww", contacts.get(position).toString());

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -43,20 +42,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*Custom Code*/
+        /*Firebase references*/
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         fab.setVisibility(View.GONE);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -66,6 +59,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -82,6 +76,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        /*Handle backpress for main activity across all fragments*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -96,13 +91,11 @@ public class MainActivity extends AppCompatActivity
                             MainActivity.super.onBackPressed();
                         }
                     }).create().show();
-            //super.onBackPressed();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -110,12 +103,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -125,7 +115,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment = null;
         if (id == R.id.nav_add_contact) {
@@ -135,6 +124,7 @@ public class MainActivity extends AppCompatActivity
             fragment = new ViewContactsFragment();
             Utility.changeFragment(fragment, this);
         } else if (id == R.id.nav_logout) {
+            /*Sign out user*/
             mAuth.signOut();
             mGoogleSignInClient.signOut();
             mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
@@ -144,11 +134,13 @@ public class MainActivity extends AppCompatActivity
 
                         }
                     });
+            /*Close main activity and open sigin activity*/
             try{
                 this.finish();
             }catch (Exception e){
 
             }finally {
+
                 Intent i = new Intent(MainActivity.this, SignInActivity.class);
                 startActivity(i);
             }
@@ -158,11 +150,4 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-//    private void changeFragment(Fragment targetFragment){
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.main_fragment, targetFragment, "fragment")
-//                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//                .commit();
-//    }
 }

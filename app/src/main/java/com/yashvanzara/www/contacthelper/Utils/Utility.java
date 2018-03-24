@@ -16,6 +16,7 @@ public final class Utility {
     /*Class for frequently used functionalities throughout the application*/
 
     public static void changeFragment(Fragment targetFragment, FragmentActivity fa){
+        /*Utility function for changing fragments*/
         fa.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_fragment, targetFragment, "fragment")
@@ -23,6 +24,7 @@ public final class Utility {
                 .commit();
     }
     public static void SnackShort(String message, View v){
+        /*Snackbar for Short Length*/
         Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show();
     }
     private Utility() throws InstantiationException {

@@ -82,7 +82,7 @@ public class ContactDetailsFragment extends BottomSheetFragment implements OnMap
                 if(contact != null){
                     loadMap();
                     tvContactDetails.setText(contact.getContactName() + " (" + c.getContactNickName() + ")");
-                    tvContactDetailsPhone.setText(c.getContactNumber());
+                    tvContactDetailsPhone.setText("Phone: " + c.getContactNumber());
                 }else{
                 }
 

@@ -38,9 +38,11 @@ public class ContactDAO {
         });
     }
     public void addOrUpdateContact(Contact c){
+        /*Method to create or edit contacts of authorized user based on contact number*/
         mDatabase.child("users").child(user.getUid()).child("contacts").child(c.getContactNumber()).setValue(c);
     }
     public void deleteContact(String contactNumber){
+        /*Delete a particular contact number*/
         mDatabase.child("users").child(user.getUid()).child("contacts").child(contactNumber).removeValue();
     }
 

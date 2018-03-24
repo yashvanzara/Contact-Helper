@@ -82,6 +82,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
     SupportMapFragment mapFragment;
     /*End of Place picker fields*/
 
+    /*Miscellaneous fields*/
     Validator validator;//Validator for fields
     TextView tvAddDeleteContactHeader;
     Contact c;//Editing contact comes here
@@ -106,7 +107,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
         mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         Bundle b = getArguments();
-        /*Check if the fragment was openeed for editing. If yes, populate the UI with available contact for editing*/
+        /*Check if the fragment was opened for editing. If yes, populate the UI with available contact for editing*/
         if(b!=null){
             c = (Contact)b.getSerializable("contact");
             if(c!=null){
@@ -131,7 +132,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
         btnSaveContact.setOnClickListener(this);
         btnContactLocation.setOnClickListener(this);
 
-        /*Get Firebase and map references*/
+        /*Get Firebase references*/
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -183,6 +184,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        /*User has selected a Place, save it to contact and redraw map*/
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(getActivity(), data);
@@ -194,6 +196,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        /*Redraw map using new coordinate*/
         if(contactLongtitude!=INVALID_LAT_LONG&&contactLongtitude!=INVALID_LAT_LONG){
             LatLng selected = null;
             selected = new LatLng(contactLatitude, contactLongtitude);
@@ -209,6 +212,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onValidationSucceeded() {
+        /*Save  or update the contact if all validations succeed*/
         Contact c = new Contact(etNewContactPhone.getText().toString(), etNewContactName.getText().toString(), etNewContackNickName.getText().toString(), contactLatitude, contactLongtitude);
         ContactDAO db = new ContactDAO();
         db.addOrUpdateContact(c);
@@ -219,6 +223,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
+        /*Display validation error, if any*/
         for (ValidationError error : errors) {
             View view = error.getView();
             String message = error.getCollatedErrorMessage(getActivity());
@@ -232,6 +237,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
         }
     }
     private void clearFields(){
+        /*Function to reset fields*/
         etNewContactName.setText("");
         etNewContactPhone.setText("");
         etNewContackNickName.setText("");
