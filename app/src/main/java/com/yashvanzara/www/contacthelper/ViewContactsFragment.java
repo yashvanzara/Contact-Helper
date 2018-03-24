@@ -3,6 +3,7 @@ package com.yashvanzara.www.contacthelper;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,12 +56,15 @@ public class ViewContactsFragment extends Fragment {
     protected BottomSheetLayout bottomSheetLayout;
     TextView tvNoData;
     Contact contactForEditing;
+    NavigationView navigationView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_contacts, container, false);
-        bottomSheetLayout = (BottomSheetLayout) view.findViewById(R.id.bottomsheet);
+        navigationView = getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_view_contacts);
+        bottomSheetLayout =  view.findViewById(R.id.bottomsheet);
         bottomSheetLayout.setUseHardwareLayerWhileAnimating(true);
         tvNoData = view.findViewById(R.id.tvNoData);
         mListView = view.findViewById(R.id.material_listview);
@@ -84,15 +88,13 @@ public class ViewContactsFragment extends Fragment {
                     final String key = contactSnapShop.getKey();
                     Contact c = contactSnapShop.getValue(Contact.class);
                     contacts.add(c);
-                    Log.d("Data", key);
-                    Log.d("Contact", c.toString());
                     /*Loop through the updated tree and update local copy*/
                     final Card card = new Card.Builder(getActivity())
                             .setTag(c.getContactNumber())
                             .withProvider(new CardProvider())
                             .setLayout(R.layout.custom_contact_card)
                             .setDescription("Phone: " + c.getContactNumber())
-                            .setTitle(c.getContactName() + " ( "+c.getContactNickName() + " )")
+                            .setTitle(c.getContactName() + " ("+c.getContactNickName() + ")")
                             .addAction(R.id.right_text_button, new TextViewAction(getActivity())
                                     .setText("View")
                                     .setTextResourceColor(R.color.accent_material_dark)
@@ -117,8 +119,8 @@ public class ViewContactsFragment extends Fragment {
                                             args.putSerializable("contact", contactForEditing);
                                             CreateContactFragment fgmt = new CreateContactFragment();
                                             fgmt.setArguments(args);
+                                            navigationView.setCheckedItem(R.id.nav_add_contact);
                                             Utility.changeFragment(fgmt, getActivity());
-
                                         }
                                     }))
                             .endConfig()

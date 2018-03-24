@@ -2,7 +2,6 @@ package com.yashvanzara.www.contacthelper;
 
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -55,22 +54,24 @@ public class ContactDetailsFragment extends BottomSheetFragment implements OnMap
     Button btnCallContact;
     Button btnDeleteContact;
     TextView tvContactDetails;
+    TextView tvContactDetailsPhone;
     ValueEventListener listener;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_details, container, false);
+        /*References*/
         btnCallContact = view.findViewById(R.id.btnCallContact);
-        btnCallContact.setOnClickListener(this);
-        btnDeleteContact = view.findViewById(R.id.btnDeleteContact);
-        btnDeleteContact.setOnClickListener(this);
         tvContactDetails = view.findViewById(R.id.tvContactDetailsHeader);
+        tvContactDetailsPhone = view.findViewById(R.id.tvContactDetailsPhone);
         mapView = view.findViewById(R.id.mapDisplay);
-        mapView.onCreate(savedInstanceState);
-        final Context context = this.getActivity();
-        contactNumber = getArguments().getString("contact");
+        btnDeleteContact = view.findViewById(R.id.btnDeleteContact);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+        btnCallContact.setOnClickListener(this);
+        btnDeleteContact.setOnClickListener(this);
+        mapView.onCreate(savedInstanceState);
+        contactNumber = getArguments().getString("contact");
         MapsInitializer.initialize(this.getActivity());
         dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("contacts").child(contactNumber);
         listener = new ValueEventListener() {
@@ -80,7 +81,8 @@ public class ContactDetailsFragment extends BottomSheetFragment implements OnMap
                 contact = c;
                 if(contact != null){
                     loadMap();
-                    tvContactDetails.setText(contact.getContactName());
+                    tvContactDetails.setText(contact.getContactName() + " (" + c.getContactNickName() + ")");
+                    tvContactDetailsPhone.setText(c.getContactNumber());
                 }else{
                 }
 
@@ -121,18 +123,20 @@ public class ContactDetailsFragment extends BottomSheetFragment implements OnMap
     public void onMapReady(GoogleMap googleMap) {
         LatLng selected = new LatLng(contact.getContactLatitude(), contact.getContactLongtitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(selected, 10);
-        googleMap.addMarker(new MarkerOptions().position(selected).title(contact.getContactName()));
+        googleMap.addMarker(new MarkerOptions().position(selected).title(contact.getContactName())).showInfoWindow();
         googleMap.animateCamera(cameraUpdate);
     }
 
     @Override
     public void onClick(View view) {
         if(btnCallContact.getId() == view.getId()){
+            /*Handle call action*/
                             Intent intent = new Intent(Intent.ACTION_DIAL);
                             String phone = "tel:" + contact.getContactNumber();
                             intent.setData(Uri.parse(phone));
                             startActivity(intent);
         }else if(btnDeleteContact.getId() == view.getId()){
+            /*Handle Delete contact action*/
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
             alert.setTitle("Delete");
             alert.setMessage("Are you sure you want to delete?");

@@ -9,10 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add contact"
-        android:id="@+id/tvAddContactHeader"
+        android:id="@+id/tvAddEditContactHeader"
         android:textSize="21sp"/>
     <EditText
-        android:layout_below="@id/tvAddContactHeader"
+        android:layout_below="@id/tvAddEditContactHeader"
         android:id="@+id/etNewContactName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +43,8 @@
         android:layout_marginRight="10dp"
         android:layout_below="@id/etNewContactPhone"
         android:layout_toLeftOf="@id/btnSaveContact"
-        android:text="Location"/>
+        android:padding="5dp"
+        android:text="Set Location"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

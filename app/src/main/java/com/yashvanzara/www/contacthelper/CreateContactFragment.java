@@ -3,13 +3,14 @@ package com.yashvanzara.www.contacthelper;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -67,10 +68,9 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
     FirebaseAuth mAuth;
     FirebaseUser user;
     private DatabaseReference mDatabase;
-
     /*End of Firebase fields*/
 
-    /*Place Picker fields*/
+    /*Place Picker related fields*/
     private GoogleApiClient mGoogleApiClient;
     private int PLACE_PICKER_REQUEST = 1;
     private Button btnContactLocation;
@@ -83,27 +83,49 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
     /*End of Place picker fields*/
 
     Validator validator;//Validator for fields
+    TextView tvAddDeleteContactHeader;
+    Contact c;//Editing contact comes here
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_create_contact, container, false);
-
+        /*Check navigation drawer item*/
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_add_contact);
+        /*References*/
+        tvAddDeleteContactHeader = view.findViewById(R.id.tvAddEditContactHeader);
+        etNewContactName = view.findViewById(R.id.etNewContactName);
+        etNewContactPhone = view.findViewById(R.id.etNewContactPhone);
+        etNewContackNickName = view.findViewById(R.id.etNewContactNickName);
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(getActivity())
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+        mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map);
         Bundle b = getArguments();
+        /*Check if the fragment was openeed for editing. If yes, populate the UI with available contact for editing*/
         if(b!=null){
-            Contact c = (Contact)b.getSerializable("contact");
+            c = (Contact)b.getSerializable("contact");
             if(c!=null){
-                Log.d("CCCC", c.toString());
+                tvAddDeleteContactHeader.setText("Edit Contact");
+                etNewContactName.setText(c.getContactName());
+                etNewContackNickName.setText(c.getContactNickName());
+                etNewContactPhone.setText(c.getContactNumber());
+                etNewContactPhone.setEnabled(false);
+                etNewContactPhone.setFocusable(false);
+                this.contactLatitude = c.getContactLatitude();
+                this.contactLongtitude = c.getContactLongtitude();
             }
         }
-
+        mapFragment.getMapAsync(this);
         validator = new Validator(this);
         validator.setValidationListener(this);
 
         /*Register views*/
-        etNewContactName = view.findViewById(R.id.etNewContactName);
-        etNewContactPhone = view.findViewById(R.id.etNewContactPhone);
-        etNewContackNickName = view.findViewById(R.id.etNewContactNickName);
+
         btnSaveContact = view.findViewById(R.id.btnSaveContact);
         btnContactLocation = view.findViewById(R.id.btnContactLocation);
         btnSaveContact.setOnClickListener(this);
@@ -113,13 +135,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .build();
-        mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
+
         return view;
     }
 
@@ -179,10 +195,11 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
     @Override
     public void onMapReady(GoogleMap googleMap) {
         if(contactLongtitude!=INVALID_LAT_LONG&&contactLongtitude!=INVALID_LAT_LONG){
+            LatLng selected = null;
+            selected = new LatLng(contactLatitude, contactLongtitude);
             googleMap.clear();
-                LatLng selected = new LatLng(contactLatitude, contactLongtitude);
                 googleMap.addMarker(new MarkerOptions().position(selected)
-                        .title(etNewContactName.getText().toString()));
+                        .title(etNewContactName.getText().toString())).showInfoWindow();
                 googleMap.setMinZoomPreference(8);
                 googleMap.setMaxZoomPreference(15);
                 googleMap.setBuildingsEnabled(true);
@@ -194,9 +211,10 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
     public void onValidationSucceeded() {
         Contact c = new Contact(etNewContactPhone.getText().toString(), etNewContactName.getText().toString(), etNewContackNickName.getText().toString(), contactLatitude, contactLongtitude);
         ContactDAO db = new ContactDAO();
-        db.addContact(c);
+        db.addOrUpdateContact(c);
         clearFields();
         Utility.SnackShort("Contact Saved!", getActivity().findViewById(android.R.id.content));
+        tvAddDeleteContactHeader.setText("Add Contact");
     }
 
     @Override
