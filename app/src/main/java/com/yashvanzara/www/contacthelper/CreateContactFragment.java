@@ -228,7 +228,7 @@ public class CreateContactFragment extends Fragment implements View.OnClickListe
             View view = error.getView();
             String message = error.getCollatedErrorMessage(getActivity());
 
-            // Display error messages ;)
+            // Display error messages
             if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
